@@ -34,9 +34,11 @@ public class Main {
 
         //preparando a heap
         System.out.println("Digite o tamanho da HEAP em Kb:");
+        System.out.println("==Conversão==\n1024Kb -> 1Mb\n65536Kb -> 64Mb\n131072Kb -> 128Mb\n262144Kb -> 256Mb\n524288Kb -> 512Mb\n1048576Kb -> 1Gb");
         int heapSize = scanner.nextInt();
         GerenciadorMemoria gerenteMemoria = new GerenciadorMemoria(heapSize);
         GeradorRequisicoes gerador = new GeradorRequisicoes();
+        gerenteMemoria.getTamanho();
 
         do {
             System.out.println("\n=== MENU DO SIMULADOR ===");
@@ -53,16 +55,20 @@ public class Main {
                 case 1:
                     System.out.println("\nGerando lote de requisições...\nValores padrão para teste:\nMínimo = 16Bytes [4 int]\nMáximo = 1Kb -> 1024Bytes [256 int]");
                     System.out.println("Digite um valor mínimio em bytes para cada requisição:");
+                    //criar condição para garantir valores mínimos.....
                     int min = scanner.nextInt();
                     System.out.println("Digite um valor máximo em bytes para cada requisição:");
                     int max = scanner.nextInt();
                     System.out.println("Digite a quantidade de requisições que deseja fazer:");
                     int totalReq = scanner.nextInt();
 
+                    //cria uma List de reqMem com chamada "lote"
+                    List<RequisicaoMemoria> lote = gerador.gerarLote(totalReq, min, max);
+
                     //teste com o alocar padrão
-                    List<RequisicaoMemoria> lote = gerador.gerarLote(totalReq, min, max); //cria uma List de reqMem com um lote
+                    System.out.println("\n===Memoria sem desfragmentar===");
                     inicio = System.currentTimeMillis();
-                    for (RequisicaoMemoria r : lote) { //enquanto houver lote
+                    for (RequisicaoMemoria r : lote) { //enquanto houver req em lote
                         gerenteMemoria.alocarFirstFit(r);//aloca cada req
                     }
                     fim = System.currentTimeMillis();
@@ -72,6 +78,7 @@ public class Main {
                     gerenteMemoria.resetarHeap();
 
                     //teste com o alocar que desfragmenta
+                    System.out.println("\n===Memoria com desfragmentação===");
                     inicio = System.currentTimeMillis();
                     for (RequisicaoMemoria r : lote) { //enquanto houver lote
                         gerenteMemoria.alocarFirstFitDesfragmentando(r);//aloca cada req

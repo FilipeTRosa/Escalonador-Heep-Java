@@ -16,7 +16,7 @@ public class GerenciadorMemoria {
     private long somaTamanhosDesalocadas = 0;
     private long tempoExecucaoMs = 0;
     private int totalAlocacoesComFalha = 0;
-
+    private int totalDesfragmentacoesRealizadas = 0;
 
     /**
      * Cria um gerenciador de memória com uma heap de tamanho especificado em kilobytes.
@@ -127,9 +127,34 @@ public class GerenciadorMemoria {
             }
         }
 
-        // Libera 30% e tenta de novo
+        // Libera 30% se necessário
         liberar30PorCento();
-        desfragmentar();
+
+        // Verifica fragmentação crítica
+        int livres = 0;
+        int maiorEspacoLivreContiguo = 0;
+        int espacoAtual = 0;
+
+        for (int i = 0; i < heap.length; i++) {
+            if (heap[i] == 0) {
+                livres++;
+                espacoAtual++;
+                if (espacoAtual > maiorEspacoLivreContiguo) {
+                    maiorEspacoLivreContiguo = espacoAtual;
+                }
+            } else {
+                espacoAtual = 0;
+            }
+        }
+
+        double percentualLivre = (double) livres / heap.length;
+        boolean fragmentacaoCritica = percentualLivre > 0.5 && maiorEspacoLivreContiguo < tamanho;
+
+        // Desfragmenta apenas se a fragmentação for crítica
+        if (fragmentacaoCritica) {
+            desfragmentar();
+            totalDesfragmentacoesRealizadas++;
+        }
 
         // Segunda tentativa
         for (int i = 0; i <= heap.length - tamanho; i++) {
@@ -149,6 +174,7 @@ public class GerenciadorMemoria {
                 return true;
             }
         }
+
         totalAlocacoesComFalha++;
         return false;
     }
@@ -260,5 +286,6 @@ public class GerenciadorMemoria {
                 (totalRequisicoesDesalocadas > 0 ? somaTamanhosDesalocadas / totalRequisicoesDesalocadas : 0) + " inteiros");
         System.out.println("Tempo total de execução: " + tempoExecucaoMs + " ms");
         System.out.println("Total de alocações que falharam: " + totalAlocacoesComFalha);
+        System.out.println("Total de desfragmentações realizadas: " + totalDesfragmentacoesRealizadas);
     }
 }
