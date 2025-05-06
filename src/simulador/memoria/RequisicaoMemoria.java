@@ -1,3 +1,5 @@
+package simulador.memoria;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -37,7 +39,7 @@ public class RequisicaoMemoria {
 
     @Override
     public String toString() {
-        return "RequisicaoMemoria{" +
+        return "simulador.memoria.RequisicaoMemoria{" +
                 "id=" + id +
                 ", tamanho=" + tamanho +
                 ", timestamp=" + timestamp +
