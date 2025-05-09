@@ -38,7 +38,7 @@ public class Main {
         int heapSize = scanner.nextInt();
         GerenciadorMemoria gerenteMemoria = new GerenciadorMemoria(heapSize);
         GeradorRequisicoes gerador = new GeradorRequisicoes();
-        gerenteMemoria.getTamanho();
+        System.out.println("Tamanho Heap: " + gerenteMemoria.tamanhoHeap());
 
         do {
             System.out.println("\n=== MENU DO SIMULADOR ===");
@@ -69,9 +69,10 @@ public class Main {
                     System.out.println("\n===Memoria sem desfragmentar===");
                     inicio = System.currentTimeMillis();
                     for (RequisicaoMemoria r : lote) { //enquanto houver req em lote
-                        gerenteMemoria.alocarFirstFit(r);//aloca cada req
+                        gerenteMemoria.alocar(r,false); //aloca cada req
                     }
                     fim = System.currentTimeMillis();
+                    System.out.println(gerenteMemoria.toString());
                     gerenteMemoria.setTempoExecucao(fim - inicio);
                     gerenteMemoria.imprimirEstatisticas();
 
@@ -81,12 +82,13 @@ public class Main {
                     System.out.println("\n===Memoria com desfragmentação===");
                     inicio = System.currentTimeMillis();
                     for (RequisicaoMemoria r : lote) { //enquanto houver lote
-                        gerenteMemoria.alocarFirstFitDesfragmentando(r);//aloca cada req
+                        gerenteMemoria.alocar(r,true);//aloca cada req
                     }
                     fim = System.currentTimeMillis();
                     gerenteMemoria.setTempoExecucao(fim - inicio);
                     gerenteMemoria.imprimirEstatisticas();
 
+                    gerenteMemoria.resetarHeap();
                     break;
                 case 2:
                     System.out.println("Exibindo estado da heap...");
